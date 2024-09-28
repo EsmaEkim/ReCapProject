@@ -9,16 +9,26 @@ namespace Business.Concrete
 {
     public class CarManager : ICarService
     {
-        InMemory _ınMemory;
-        public CarManager(InMemory ınMemory)
+        ICarDal _carDal;
+        public CarManager(ICarDal carDal)
         {
-            _ınMemory = ınMemory;
+            _carDal = carDal;
         }
         public List<Car> GetAll()
         {
             //Jobcodes
-            //z.B gibt es eine Berechtigung?
-            return _ınMemory.GetAll();
+            //z.B gibt es eine Berechtigung? 
+            return _carDal.GetAll(); 
+        }
+
+        public List<Car> GetAllByCarId(int id)
+        {
+            return _carDal.GetAll(c => c.CarId == id);
+        }
+
+        public List<Car> GetByModelYear(decimal min, decimal max)
+        {
+            return _carDal.GetAll(c => c.ModelYear >= min && c.ModelYear <= max);
         }
     }
 }

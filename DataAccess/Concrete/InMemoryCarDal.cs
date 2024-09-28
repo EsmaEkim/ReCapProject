@@ -3,11 +3,12 @@ using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace DataAccess.Concrete
 {
-    public class InMemoryCarDal : InMemory
+    public class InMemoryCarDal : ICarDal
     {
         List<Color> _colors;
         List<Brand> _brands;    
@@ -49,13 +50,13 @@ namespace DataAccess.Concrete
             var result = from c in _cars
                          join b in _brands
                          on c.BrandId equals b.BrandId
-                         where c.DailyPrice>800
+                         where c.DailyPrice > 800
                          orderby c.DailyPrice descending
-                         select new CarDto { CarId = c.CarId, ColorId = c.ColorId, DailyPrice = c.DailyPrice, BrandName = b.BrandName, Description=c.Description};
+                         select new Car { CarId = c.CarId, ColorId = c.ColorId, DailyPrice = c.DailyPrice, CarName = c.CarName, Description = c.Description };
 
             foreach (var carDto in result)
             {
-                Console.WriteLine("{0}:{1}",carDto.BrandName , carDto.Description);
+                Console.WriteLine("{0}:{1}", carDto.CarName, carDto.Description);
             }
 
         }
@@ -63,10 +64,10 @@ namespace DataAccess.Concrete
         private void AscDescTest()
         {
             //Single line query
-            var result = _cars.Where(c => c.Description.Contains("lux")).OrderByDescending(c => c.DailyPrice).ThenByDescending(c => c.BrandName);
+            var result = _cars.Where(c => c.Description.Contains("lux")).OrderByDescending(c => c.DailyPrice);
             foreach (var car in result)
             {
-                Console.WriteLine(car.BrandName);
+                Console.WriteLine(car.CarName);
             }
         }
 
@@ -81,13 +82,13 @@ namespace DataAccess.Concrete
         {
             //Das gesuchte Objekt wird mit dem passenden Objekt bereitgestellt.
             var result = _cars.Find(c => c.BrandId == 2);
-            Console.WriteLine(result.BrandName);
+            Console.WriteLine(result.CarName);
         }
 
         private void AnyTest()
         {
             //Ich kann überprüfen, ob ein Element in einer Liste verhanden ist oder nicht.
-            var result = _cars.Any(c => c.BrandName == "Mercedes: ");
+            var result = _cars.Any(c => c.CarName == "Mercedes: ");
             Console.WriteLine(result);
             //var result = _cars.Any(c => c.BrandName == "Porsche");
             //Console.WriteLine(result);
@@ -125,6 +126,14 @@ namespace DataAccess.Concrete
             carToUpdate.Description = car.Description;
         }
 
-        
+        public List<Car> GetAll(Expression<Func<Car, bool>> filter = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Car Get(Expression<Func<Car, bool>> filter = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
