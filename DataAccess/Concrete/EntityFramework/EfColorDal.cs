@@ -52,10 +52,13 @@ namespace DataAccess.Concrete.EntityFramework
         {
             using (CarContext context = new CarContext())
             {
-                var updatedEntity = context.Entry(entity);
-                updatedEntity.State = EntityState.Modified;
-                context.SaveChanges();
+                var colorToUpdate = context.Colors.SingleOrDefault(co => co.ColorId == entity.ColorId);
+                colorToUpdate.ColorName = entity.ColorName;
             }
+
+            //var updatedEntity = context.Entry(entity);
+            //updatedEntity.State = EntityState.Modified;
+            //context.SaveChanges()
         }
     }
 }

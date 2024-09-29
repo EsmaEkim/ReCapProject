@@ -16,8 +16,10 @@ namespace DataAccess.Concrete.EntityFramework
             using (CarContext context = new CarContext())
             {
                 var addedEntity = context.Entry(entity);
-                addedEntity.State = EntityState.Added;
+                addedEntity.State = EntityState.Added;                
                 context.SaveChanges();
+
+                
             }
         }
 
@@ -45,6 +47,9 @@ namespace DataAccess.Concrete.EntityFramework
             {
                 return filter == null ? context.Set<Car>().ToList()
                                       : context.Set<Car>().Where(filter).ToList();
+
+               
+
             }
         }
 
@@ -52,10 +57,18 @@ namespace DataAccess.Concrete.EntityFramework
         {
             using (CarContext context = new CarContext())
             {
-                var updatedEntity = context.Entry(entity);
-                updatedEntity.State = EntityState.Modified;
+                var carToUpdate = context.Cars.SingleOrDefault(c => c.CarId == entity.CarId);
+                carToUpdate.CarName = entity.CarName;
+                carToUpdate.BrandId = entity.BrandId;
+                carToUpdate.ColorId = entity.ColorId;
+                carToUpdate.DailyPrice = entity.DailyPrice;
+                carToUpdate.Description = entity.Description;
                 context.SaveChanges();
             }
+
+            //var updatedEntity = context.Entry(entity);
+            //updatedEntity.State = EntityState.Modified;
+            //context.SaveChanges();
         }
     }
 }

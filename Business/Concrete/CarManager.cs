@@ -30,5 +30,20 @@ namespace Business.Concrete
         {
             return _carDal.GetAll(c => c.ModelYear >= min && c.ModelYear <= max);
         }
+
+        public List<Car> GetCarsByBrandId(int id)
+        {
+            return _carDal.GetAll(c => c.BrandId == id);
+        }
+
+        public List<Car> GetCarsByColorId(int id)
+        {
+            return _carDal.GetAll(c => c.ColorId == id);
+        }
+
+        public List<Car> GetCarsByDailyPrice(int id)
+        {
+            return _carDal.GetAll(c => c.DailyPrice>= 0);
+        }
     }
 }
