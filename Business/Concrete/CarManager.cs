@@ -33,7 +33,7 @@ namespace Business.Concrete
         {
             //Jobcodes
             //z.B gibt es eine Berechtigung?
-            if (DateTime.Now.Hour==22)
+            if (DateTime.Now.Hour == 6)
             {
                 return new ErrorDataResult<List<Car>>(Messages.MaintenanceTime);
             }
@@ -58,7 +58,7 @@ namespace Business.Concrete
 
         public IDataResult<List<CarDetailDto>> GetCarDetails()
         {
-            if (DateTime.Now.Hour==23)
+            if (DateTime.Now.Hour==6)
             {
                 return new ErrorDataResult<List<CarDetailDto>>(Messages.MaintenanceTime);
             }
