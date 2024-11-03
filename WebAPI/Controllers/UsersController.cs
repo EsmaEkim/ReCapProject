@@ -12,22 +12,21 @@ using System.Threading.Tasks;
 namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController] //-->Attribute
-    public class CarsController : ControllerBase
+    [ApiController]
+    public class UsersController : ControllerBase
     {
-        ICarService _carService;
+        IUserService _userService;
 
-        public CarsController(ICarService carService)
+        public UsersController(IUserService userService)
         {
-            _carService = carService;
+            _userService = userService;
         }
-
         [HttpGet]
-        public List<Car> Get()
+        public List<User> Get()
         {
-            ICarService carService = new CarManager(new EfCarDal());
-            var result = _carService.GetAll();
-            return result.Data; 
+            IUserService userService = new UserManager(new EfUserDal());
+            var result = _userService.GetAll();
+            return result.Data;
         }
     }
 }
