@@ -17,20 +17,30 @@ namespace Business.Concrete
     public class CarManager : ICarService
     {
         ICarDal _carDal;
+
         public CarManager(ICarDal carDal)
         {
             _carDal = carDal;
+
+
         }
 
         [ValidationAspect(typeof(CarValidator))]
         public IResult Add(Car car)
         {
-                     
-            _carDal.Add(car);
-            return new SuccessResult(Messages.CarAdded);
+
+            if (CheckIfColorOfCarCorrect(car.ColorId).Success)
+            {
+                _carDal.Add(car);
+                return new SuccessResult(Messages.CarAdded);
+            }
+
+            return new ErrorResult();
+
+
         }
 
-        public  IDataResult<List<Car>> GetAll()
+        public IDataResult<List<Car>> GetAll()
         {
             //Jobcodes
             //z.B gibt es eine Berechtigung?
@@ -39,7 +49,7 @@ namespace Business.Concrete
             //    return new ErrorDataResult<List<Car>>(Messages.MaintenanceTime);
             //}
 
-            return new SuccessDataResult<List<Car>>(_carDal.GetAll(),Messages.CarsListed); 
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(), Messages.CarsListed);
         }
 
         public IDataResult<List<Car>> GetAllByCarId(int id)
@@ -54,21 +64,21 @@ namespace Business.Concrete
 
         public IDataResult<List<Car>> GetByModelYear(int id)
         {
-            return new SuccessDataResult<List<Car>> (_carDal.GetAll(c => c.ModelYear == id));
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.ModelYear == id));
         }
 
         public IDataResult<List<CarDetailDto>> GetCarDetails()
         {
-            if (DateTime.Now.Hour==6)
+            if (DateTime.Now.Hour == 6)
             {
                 return new ErrorDataResult<List<CarDetailDto>>(Messages.MaintenanceTime);
             }
-            return new SuccessDataResult<List<CarDetailDto>> (_carDal.GetCarDetails());
+            return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails());
         }
 
         public IDataResult<List<Car>> GetCarsByBrandId(int id)
         {
-            return new SuccessDataResult<List<Car>> (_carDal.GetAll(c => c.BrandId == id));
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.BrandId == id));
         }
 
         public IDataResult<List<Car>> GetCarsByColorId(int id)
@@ -76,11 +86,32 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.ColorId == id));
         }
 
-        
+
 
         public IDataResult<List<Car>> GetCarsByDailyPrice(decimal min, decimal max)
         {
-            return new SuccessDataResult<List<Car>> (_carDal.GetAll(c => c.DailyPrice >= min && c.DailyPrice <= max));
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.DailyPrice >= min && c.DailyPrice <= max));
+        }
+
+        [ValidationAspect(typeof(CarValidator))]
+        public IResult Update(Car car)
+        {
+            var result = _carDal.GetAll(c => c.CarId == car.CarId).Count;
+            if (result >= 15)
+            {
+                return new ErrorResult(Messages.ColorCountOfCarError);
+            }
+            throw new NotImplementedException();
+        }
+
+        private IResult CheckIfColorOfCarCorrect(int colorId)
+        {
+            var result = _carDal.GetAll(c => c.ColorId  == colorId).Count;
+            if (result >= 15)
+            {
+                return new ErrorResult(Messages.ColorCountOfCarError);
+            }
+            return new SuccessResult();
         }
     }
 }

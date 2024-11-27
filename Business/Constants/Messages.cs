@@ -37,5 +37,6 @@ namespace Business.Constants
         public static string RentalUpdated = "Die Miettransaktion wurde aktualisiert";
         public static string RentalListed = "Die Miettransaktionen wurden aufgelistet";
 
+        public static string ColorCountOfCarError= "In einem Auto kann maximal eine Farbe sein.";
     }
 }
