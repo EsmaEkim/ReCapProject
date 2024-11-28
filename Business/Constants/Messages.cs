@@ -38,5 +38,7 @@ namespace Business.Constants
         public static string RentalListed = "Die Miettransaktionen wurden aufgelistet";
 
         public static string ColorCountOfCarError= "In einem Auto kann maximal eine Farbe sein.";
+        public static string ColorAlreadyExists="Diese Farbe gibt es schon.";
+        public static string ColorLimitExceded= "Wegen der Überschreitung des Farbenlimits können keine neuen Farben hinzugefügt werden.";
     }
 }

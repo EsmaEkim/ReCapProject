@@ -3,6 +3,7 @@ using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -10,6 +11,7 @@ using Entities.DTOs;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Business.Concrete
@@ -17,10 +19,12 @@ namespace Business.Concrete
     public class CarManager : ICarService
     {
         ICarDal _carDal;
+        IColorService _colorService;
 
-        public CarManager(ICarDal carDal)
+        public CarManager(ICarDal carDal,IColorService colorService)
         {
             _carDal = carDal;
+            
 
 
         }
@@ -29,13 +33,15 @@ namespace Business.Concrete
         public IResult Add(Car car)
         {
 
-            if (CheckIfColorOfCarCorrect(car.ColorId).Success)
+            IResult result = BusinessRules.Run(CheckIfColorOfCarCorrect(car.ColorId),
+                CheckIfColorExists(car.ColorId),
+                CheckIfColorLimitExceded());
+            if (result!=null)
             {
-                _carDal.Add(car);
-                return new SuccessResult(Messages.CarAdded);
+                return result;
             }
-
-            return new ErrorResult();
+            _carDal.Add(car);
+            return new SuccessResult(Messages.CarAdded);
 
 
         }
@@ -112,6 +118,29 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.ColorCountOfCarError);
             }
             return new SuccessResult();
+        }
+
+        private IResult CheckIfColorExists(int colorId)
+        {
+            var result = _carDal.GetAll(c => c.ColorId == colorId).Any();
+            if (result)
+            {
+                return new ErrorResult(Messages.ColorAlreadyExists);
+            }
+            return new SuccessResult();
+        }
+        private IResult CheckIfColorLimitExceded()
+        {
+            var result = _colorService.GetAll();
+            if (result.Data.Count>5)
+            {
+                return new ErrorResult(Messages.ColorLimitExceded);
+
+            }
+            return new SuccessResult();
+            
+
+            
         }
     }
 }
