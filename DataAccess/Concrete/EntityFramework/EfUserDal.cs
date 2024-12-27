@@ -1,4 +1,5 @@
 ﻿using Core.DataAccess.EntitiyFramework;
+using Core.Entities.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
@@ -13,16 +14,19 @@ namespace DataAccess.Concrete.EntityFramework
 {
     public class EfUserDal : EfEntityRepositoryBase<User, CarContext>, IUserDal
     {
-        public List<UserDetailDto> GetUserDetails()
+        public List<OperationClaim> GetClaims(User user)
         {
-            using (CarContext context = new CarContext())
+            using (var context = new CarContext())
             {
-                var result = from us in context.Users
-                             join cu in context.Customers
-                             on us.UserId equals cu.CustomerId
-                             select new UserDetailDto { UserId = us.UserId, FirstName = us.FirstName, LastName = us.LastName, CompanyName = cu.CompanyName, Email = us.Email, Password = us.Password };
+                var result = from operationClaim in context.OperationClaims
+                             join userOperationClaim in context.UserOperationClaims
+                             on operationClaim.Id equals userOperationClaim.OperationClaimId
+                             where userOperationClaim.UserId == user.Id
+                             select new OperationClaim { Id = operationClaim.Id, Name = operationClaim.Name };
                 return result.ToList();
+
             }
         }
+
     }
 }

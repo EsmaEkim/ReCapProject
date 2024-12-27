@@ -28,7 +28,7 @@ namespace Business.Concrete
 
 
         }
-
+        [CacheRemoveAspect("ICarService.Get")]
         [ValidationAspect(typeof(CarValidator))]
         public IResult Add(Car car)
         {
@@ -49,11 +49,11 @@ namespace Business.Concrete
         public IDataResult<List<Car>> GetAll()
         {
             //Jobcodes
-            //z.B gibt es eine Berechtigung?
-            //if (DateTime.Now.Hour == 6)
-            //{
-            //    return new ErrorDataResult<List<Car>>(Messages.MaintenanceTime);
-            //}
+            //z.B gibt es eine Berechtigung ?
+            if (DateTime.Now.Hour == 6)
+            {
+                return new ErrorDataResult<List<Car>>(Messages.MaintenanceTime);
+            }
 
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(), Messages.CarsListed);
         }
