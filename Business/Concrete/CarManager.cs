@@ -25,6 +25,7 @@ namespace Business.Concrete
         public CarManager(ICarDal carDal,IColorService colorService)
         {
             _carDal = carDal;
+            _colorService = colorService;
             
 
 

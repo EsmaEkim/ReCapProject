@@ -1,5 +1,8 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -12,12 +15,16 @@ namespace Business.Concrete
     public class ColorManager : IColorService
     {
         IColorDal _colorDal;
+        IBrandService _brandService;
 
-        public ColorManager(IColorDal colorDal)
+        public ColorManager(IColorDal colorDal, IBrandService brandService)
         {
             _colorDal = colorDal;
+            _brandService = brandService;
         }
 
+        [CacheRemoveAspect("IColorService.Get")]
+        [ValidationAspect(typeof(ColorValidator))]
         public IResult Add(Color color)
         {
             _colorDal.Add(color);
